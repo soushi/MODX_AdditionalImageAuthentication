@@ -113,18 +113,34 @@ case 'OnPluginFormRender': //プラグイン画面では利用する画像一覧
 	$tbl=$this->getFullTableName('site_plugins');
 	$rs = $this->db->select('name',$tbl,"id = $id");
 	if( ($row = $modx->fetchRow($rs)) &&  $row['name'] == 'Additional Image Authentication' ){
-		$out='<h3>選択画像一覧</h3>';
+
+		$out.='<div class="tab-page" id="AddAIA">';
+		$out.='<h2 class="tab">認証用画像</h2>';
+		//$out.='<script type="text/javascript">tp.addTabPage( document.getElementById( "AddInfo" ) );</script>';
+		$out.='<div class="sectionHeader">選択画像一覧</div>';
+		$out.='<div class="sectionBody">';
 		$imgs=$GetImgFiles(MODX_BASE_PATH . $imgSelect,$contentTypes);
 		foreach( $imgs as $key => $val){
 			$no=$key+1;
 			$out.= $no.'.<img src="'.MODX_BASE_URL.$imgSelect.$val.'" alt="'.$no.'" width="120" height="120" style="margin:5px;">';
 		}
-		$out.='<h3>非選択画像一覧</h3>';
+		$out.='</div>';
+		$out.='<div class="sectionHeader">非選択画像一覧</div>';
+		$out.='<div class="sectionBody">';
 		$imgs=$GetImgFiles(MODX_BASE_PATH . $imgUnselect,$contentTypes);
 		foreach( $imgs as $key => $val){
 			$no=$key+1;
 			$out.= $no.'.<img src="'.MODX_BASE_URL.$imgUnselect.$val.'" alt="'.$no.'" width="120" height="120" style="margin:5px;">';
 		}
+		$out.='</div>';
+		$out.='</div>';
+
+    //プラグインのタブに追加させる
+		$out.='<script type="text/javascript">
+             $j(function(){
+               $j("#snipetPane").append($j("#AddAIA"));
+             });
+           </script>';
 
 		$this->event->output($out);
 	}
