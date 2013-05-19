@@ -105,7 +105,13 @@ if( !is_dir(MODX_BASE_PATH . $imgSelect) || !is_dir(MODX_BASE_PATH . $imgUnselec
 }
 
 //表示数の調整
-if( !is_numeric($viewCount) || $viewCount < 1){ $viewCount=5; }
+if( !is_numeric($viewCount) ){
+	$LogOut($this,'画像の表示数は数字で指定してください。');
+	$viewCount=5;
+}elseif( $viewCount < 2 ){
+	$LogOut($this,'画像の表示数は2以上の数字で指定してください。');
+	$viewCount=5;
+}
 
 //イベントごとの処理
 switch ($this->event->name) {
