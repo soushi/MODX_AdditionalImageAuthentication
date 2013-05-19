@@ -130,21 +130,27 @@ case 'OnPluginFormRender': //プラグイン画面では画像一覧を表示
 	$out.='<h2 class="tab">認証用画像</h2>';
 	//$out.='<script type="text/javascript">tp.addTabPage( document.getElementById( "AddInfo" ) );</script>';
 	$out.='<div class="sectionHeader">選択画像一覧</div>';
-	$out.='<div class="sectionBody">';
+	$out.='<div class="sectionBody"><ul style="margin:0px;">';
 	$imgs=$GetImgFiles(MODX_BASE_PATH . $imgSelect,$contentTypes);
 	foreach( $imgs as $key => $val){
 		$no=$key+1;
-		$out.= $no.'.<img src="'.MODX_BASE_URL.$imgSelect.$val.'" alt="'.$no.'" width="120" height="120" style="margin:5px;">';
+		$out.= '<li style="float:left;list-style:none;text-align:center;margin:5px 5px 2px 5px">'
+			.'<img src="'.MODX_BASE_URL.$imgSelect.$val.'" alt="'.$no.'" width="120" height="120">'
+			.'<br />'.$no
+			.'</li>';
 	}
-	$out.='</div>';
+	$out.='</ul><br style="clear:both;" /></div>';
 	$out.='<div class="sectionHeader">非選択画像一覧</div>';
-	$out.='<div class="sectionBody">';
+	$out.='<div class="sectionBody"><ul style="margin:0px;">';
 	$imgs=$GetImgFiles(MODX_BASE_PATH . $imgUnselect,$contentTypes);
 	foreach( $imgs as $key => $val){
 		$no=$key+1;
-		$out.= $no.'.<img src="'.MODX_BASE_URL.$imgUnselect.$val.'" alt="'.$no.'" width="120" height="120" style="margin:5px;">';
+		$out.= '<li style="float:left;list-style:none;text-align:center;margin:5px 5px 2px 5px">'
+			.'<img src="'.MODX_BASE_URL.$imgUnselect.$val.'" alt="'.$no.'" width="120" height="120">'
+			.'<br />'.$no
+			.'</li>';
 	}
-	$out.='</div>';
+	$out.='</ul><br style="clear:both;" /></div>';
 	$out.='</div>';
 
 	//プラグインのタブに追加させる
