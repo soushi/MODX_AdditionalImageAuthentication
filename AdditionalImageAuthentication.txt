@@ -97,6 +97,15 @@ $ImgToBase64=function($img,$mt){
 
 //----------------------------------------------------------------- メイン
 
+//OnPluginFormRenderイベントは別のプラグイン表示の際も実行されるので関係ないときは何もしない
+if( $this->event->name == 'OnPluginFormRender' ){
+	$tbl=$this->getFullTableName('site_plugins');
+	$rs = $this->db->select('name',$tbl,"id = $id");
+	if( !( ($row = $modx->fetchRow($rs)) &&  $row['name'] == 'Additional Image Authentication') ){
+		return '';
+	}
+}
+
 //パスの調整
 $imgSelect   = preg_replace('/\/$/','',preg_replace('/^\//','',$imgSelect  )).'/';
 $imgUnselect = preg_replace('/\/$/','',preg_replace('/^\//','',$imgUnselect)).'/';
@@ -115,41 +124,38 @@ if( !is_numeric($viewCount) ){
 
 //イベントごとの処理
 switch ($this->event->name) {
-case 'OnPluginFormRender': //プラグイン画面では利用する画像一覧を表示
-	$tbl=$this->getFullTableName('site_plugins');
-	$rs = $this->db->select('name',$tbl,"id = $id");
-	if( ($row = $modx->fetchRow($rs)) &&  $row['name'] == 'Additional Image Authentication' ){
+case 'OnPluginFormRender': //プラグイン画面では画像一覧を表示
 
-		$out.='<div class="tab-page" id="AddAIA">';
-		$out.='<h2 class="tab">認証用画像</h2>';
-		//$out.='<script type="text/javascript">tp.addTabPage( document.getElementById( "AddInfo" ) );</script>';
-		$out.='<div class="sectionHeader">選択画像一覧</div>';
-		$out.='<div class="sectionBody">';
-		$imgs=$GetImgFiles(MODX_BASE_PATH . $imgSelect,$contentTypes);
-		foreach( $imgs as $key => $val){
-			$no=$key+1;
-			$out.= $no.'.<img src="'.MODX_BASE_URL.$imgSelect.$val.'" alt="'.$no.'" width="120" height="120" style="margin:5px;">';
-		}
-		$out.='</div>';
-		$out.='<div class="sectionHeader">非選択画像一覧</div>';
-		$out.='<div class="sectionBody">';
-		$imgs=$GetImgFiles(MODX_BASE_PATH . $imgUnselect,$contentTypes);
-		foreach( $imgs as $key => $val){
-			$no=$key+1;
-			$out.= $no.'.<img src="'.MODX_BASE_URL.$imgUnselect.$val.'" alt="'.$no.'" width="120" height="120" style="margin:5px;">';
-		}
-		$out.='</div>';
-		$out.='</div>';
+	$out.='<div class="tab-page" id="AddAIA">';
+	$out.='<h2 class="tab">認証用画像</h2>';
+	//$out.='<script type="text/javascript">tp.addTabPage( document.getElementById( "AddInfo" ) );</script>';
+	$out.='<div class="sectionHeader">選択画像一覧</div>';
+	$out.='<div class="sectionBody">';
+	$imgs=$GetImgFiles(MODX_BASE_PATH . $imgSelect,$contentTypes);
+	foreach( $imgs as $key => $val){
+		$no=$key+1;
+		$out.= $no.'.<img src="'.MODX_BASE_URL.$imgSelect.$val.'" alt="'.$no.'" width="120" height="120" style="margin:5px;">';
+	}
+	$out.='</div>';
+	$out.='<div class="sectionHeader">非選択画像一覧</div>';
+	$out.='<div class="sectionBody">';
+	$imgs=$GetImgFiles(MODX_BASE_PATH . $imgUnselect,$contentTypes);
+	foreach( $imgs as $key => $val){
+		$no=$key+1;
+		$out.= $no.'.<img src="'.MODX_BASE_URL.$imgUnselect.$val.'" alt="'.$no.'" width="120" height="120" style="margin:5px;">';
+	}
+	$out.='</div>';
+	$out.='</div>';
 
-    //プラグインのタブに追加させる
-		$out.='<script type="text/javascript">
+	//プラグインのタブに追加させる
+	$out.='<script type="text/javascript">
              $j(function(){
                $j("#snipetPane").append($j("#AddAIA"));
              });
            </script>';
 
-		$this->event->output($out);
-	}
+	$this->event->output($out);
+
 	break;
 
 case 'OnManagerLoginFormRender': //ログイン画面改造、画像決定、
